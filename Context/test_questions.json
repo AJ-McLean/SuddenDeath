@@ -1,0 +1,46 @@
+[
+  {
+    "q_type": "rapid_fire_recall",
+    "llm_generated_q": "List the key theoretical positions and critical tensions within Post-Internet art."
+  },
+  {
+    "q_type": "definition_one_sentence",
+    "llm_generated_q": "Define Post-Internet art in one sentence without mentioning \"the internet,\" \"digital,\" or \"online.\""
+  },
+  {
+    "q_type": "true_or_false_with_correction",
+    "llm_generated_q": "Statement: Post-Internet art marks a historical period that began after the internet ended as a meaningful cultural force. True or false? If false, correct it precisely."
+  },
+  {
+    "q_type": "summary_30_seconds",
+    "llm_generated_q": "Explain how Post-Internet art reconfigures the relationship between image production, circulation, and material objecthood — in thirty seconds."
+  },
+  {
+    "q_type": "teach_a_10_year_old",
+    "llm_generated_q": "Explain Post-Internet art to a ten-year-old without using metaphors about computers, phones, or social media."
+  },
+  {
+    "q_type": "compare_contrast",
+    "llm_generated_q": "What is the difference between Post-Internet art and institutional critique in contemporary art?"
+  },
+  {
+    "q_type": "cause_and_effect",
+    "llm_generated_q": "What structural conditions led to the emergence of Post-Internet art, and what consequences did it have for authorship and originality?"
+  },
+  {
+    "q_type": "headline_challenge",
+    "llm_generated_q": "Write a headline about Post-Internet art that captures its paradoxical relationship to commercial culture."
+  },
+  {
+    "q_type": "problem_solving_scenario",
+    "llm_generated_q": "If Post-Internet art has been fully absorbed into market aesthetics, what would you change to restore critical friction? And why?"
+  },
+  {
+    "q_type": "spot_the_error",
+    "llm_generated_q": "Listen carefully to this explanation of Post-Internet art: \"Post-Internet art rejects mass image culture and attempts to return art to a pre-digital purity focused solely on handcrafted objects.\" Now… identify the conceptual errors and explain why they matter."
+  },
+  {
+    "q_type": "rank_and_justify",
+    "llm_generated_q": "Rank these in terms of their impact on Post-Internet art’s development. Then justify your ranking: Algorithmic visibility… Networked spectatorship… Image compression aesthetics… Platform capitalism."
+  }
+]

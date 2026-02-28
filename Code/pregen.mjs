@@ -2,7 +2,7 @@ import "dotenv/config";
 import fs from "fs";
 import path from "path";
 import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
-import { TEMPLATES } from "./templates.mjs";
+import { TEMPLATES } from "../Context/templates.mjs";
 
 const VOICE_ID = "dTtuO9q1gaF6JeIDjwri";
 const MODEL_ID = "eleven_v3";

@@ -1,0 +1,104 @@
+{
+  "countdown_sequences": [
+    {
+      "id": "rambling_under_pressure",
+      "lines": [
+        "Five seconds. That’s fine. Five is a healthy number. Plenty of time to think. Don’t overthink. Actually do think. Just… efficiently.",
+        "Four. Still good. Four’s respectable. I’ve seen worse numbers.",
+        "Three. Right. Now it’s starting to look a bit… small.",
+        "Two. Oh that’s intimate. That’s uncomfortably intimate.",
+        "One. Well. I sincerely hope that was deliberate."
+      ]
+    },
+    {
+      "id": "passive_aggressive_spiral",
+      "lines": [
+        "Five seconds. Take your time. Not too much time. That would be unfortunate.",
+        "Four. Still waiting. Still very much waiting.",
+        "Three. This is the bit where people panic. Are you panicking? You should be panicking.",
+        "Two. That’s not enough time for a personality change.",
+        "One. And now we find out what you’ve done."
+      ]
+    },
+    {
+      "id": "threatened_by_silence",
+      "lines": [
+        "Five seconds. You’ve gone very quiet. I don’t like quiet.",
+        "Four. Silence is rarely a sign of brilliance.",
+        "Three. You should absolutely be speaking by now.",
+        "Two. I can’t answer for you. That’s not how this works.",
+        "One. This is entirely your decision."
+      ]
+    },
+    {
+      "id": "statistically_obsessed",
+      "lines": [
+        "Five seconds remaining. Survival probability stable. Barely.",
+        "Four seconds. Margin narrowing. Charts adjusting.",
+        "Three. That’s statistically where errors bloom.",
+        "Two. This is the danger spike.",
+        "One. Outcome locked. No revisions."
+      ]
+    },
+    {
+      "id": "cheerful_to_concerned",
+      "lines": [
+        "Five seconds! You’re fine. You look fine. I mean you don’t look fine, but metaphorically fine.",
+        "Four. Still manageable. Slightly less manageable.",
+        "Three. Oh this is tense now. This is properly tense.",
+        "Two. I would absolutely be answering.",
+        "One. Right then."
+      ]
+    },
+    {
+      "id": "mild_meltdown",
+      "lines": [
+        "Five seconds. Why are you hesitating? Don’t hesitate.",
+        "Four. No no no this is where it goes wrong.",
+        "Three. This is visibly deteriorating.",
+        "Two. That’s… that’s not good.",
+        "One. I can’t watch. I have to watch. But I don’t like it."
+      ]
+    },
+    {
+      "id": "condescendingly_helpful",
+      "lines": [
+        "Five seconds. Just pick something. Ideally the right thing.",
+        "Four. Think faster. That helps.",
+        "Three. If you know it, say it. If you don’t… pretend.",
+        "Two. Commit. Confidence is half of it.",
+        "One. And we’re done pretending."
+      ]
+    },
+    {
+      "id": "slightly_petty",
+      "lines": [
+        "Five seconds. I did explain the rules.",
+        "Four. This is not a trick question.",
+        "Three. It’s actually quite straightforward.",
+        "Two. Remarkably straightforward.",
+        "One. And yet."
+      ]
+    },
+    {
+      "id": "fake_encouragement",
+      "lines": [
+        "Five seconds. You’ve got this. Probably.",
+        "Four. You absolutely might have this.",
+        "Three. There’s still hope. Some hope.",
+        "Two. Hope is shrinking.",
+        "One. Hope has left."
+      ]
+    },
+    {
+      "id": "calmly_ominous",
+      "lines": [
+        "Five seconds. Still breathable.",
+        "Four. Still survivable.",
+        "Three. Tension rising.",
+        "Two. Margin gone.",
+        "One. Consequences."
+      ]
+    }
+  ]
+}
