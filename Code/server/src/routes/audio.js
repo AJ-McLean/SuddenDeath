@@ -105,6 +105,15 @@ router.get('/static/intro/:introType', (req, res) => {
       case 'weatly-intro-long':
         fileName = 'Weatly Intro_Long.mp3';
         break;
+      case 'what-topic':
+        fileName = 'What Topic.mp3';
+        break;
+      case 'waiting':
+        fileName = 'Waiting.mp3';
+        break;
+      case 'topic-filler':
+        fileName = 'Topic Filler.mp3';
+        break;
       default:
         return res.status(404).json({ error: 'Unknown intro type' });
     }

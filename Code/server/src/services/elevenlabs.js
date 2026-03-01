@@ -4,7 +4,7 @@ import { generateJobId } from '../utils/crypto.js';
 
 // ElevenLabs configuration from CLAUDE.md
 const ELEVENLABS_CONFIG = {
-  voiceId: 'dTtuO9q1gaF6JeIDjwri',
+  voiceId: 'Zs6wtWIJi6OPcz243n9Z',
   modelId: 'eleven_v3',
   outputFormat: 'mp3_44100_128'
 };

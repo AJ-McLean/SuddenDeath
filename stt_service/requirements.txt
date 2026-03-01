@@ -1,0 +1,33 @@
+# NVIDIA Canary STT Service Requirements
+# Tested on macOS Apple Silicon with Python 3.10
+
+# Core ML frameworks (pinned versions that work together)
+torch==2.10.0
+torchaudio==2.10.0
+numpy==2.2.6
+
+# NeMo toolkit (install from git for latest compatibility)
+# Install with: pip install git+https://github.com/NVIDIA/NeMo.git
+
+# Audio processing
+soundfile==0.12.1
+librosa==0.10.1
+
+# Web server
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+
+# Utilities
+pydantic==2.5.0
+
+# Required for NeMo imports (avoid version conflicts)
+pyannote-core==5.0.0
+pyannote-metrics==3.2.1
+
+# Optional: for better performance
+# jiwer==3.0.3  # For WER calculation if needed
+
+# Development/debugging tools (optional)
+# ipython==8.17.2
+# jupyter==1.0.0

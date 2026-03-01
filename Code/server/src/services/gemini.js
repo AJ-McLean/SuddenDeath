@@ -13,6 +13,21 @@ class GeminiService {
     this.model = this.genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
   }
 
+  async generateContent(prompt) {
+    if (!this.genAI) {
+      throw new Error('Gemini API not configured');
+    }
+
+    try {
+      const result = await this.model.generateContent(prompt);
+      const response = await result.response;
+      return response.text().trim();
+    } catch (error) {
+      console.error('Gemini content generation error:', error);
+      throw new Error(`Failed to generate content: ${error.message}`);
+    }
+  }
+
   async analyzeOutfit(imageBase64) {
     if (!this.genAI) {
       throw new Error('Gemini API not configured');

@@ -8,6 +8,8 @@ import 'dotenv/config';
 import chatRouter from './routes/chat.js';
 import audioRouter from './routes/audio.js';
 import outfitRouter from './routes/outfit.js';
+import questionsRouter from './routes/questions.js';
+import evaluationRouter from './routes/evaluation.js';
 
 // Service imports for cleanup
 import { elevenLabs } from './services/elevenlabs.js';
@@ -46,6 +48,8 @@ app.get('/health', (req, res) => {
 app.use('/api/chat', chatRouter);
 app.use('/api/audio', audioRouter);
 app.use('/api', outfitRouter);
+app.use('/api', questionsRouter);
+app.use('/api', evaluationRouter);
 
 // Root endpoint
 app.get('/', (req, res) => {
@@ -59,7 +63,9 @@ app.get('/', (req, res) => {
       audioStart: 'POST /api/audio/start',
       staticPre: 'GET /api/audio/static/pre/:questionType',
       staticPost: 'GET /api/audio/static/post/:questionType',
-      dynamicAudio: 'GET /api/audio/dynamic/:hash'
+      dynamicAudio: 'GET /api/audio/dynamic/:hash',
+      generateQuestions: 'POST /api/generate-questions',
+      questionTemplates: 'GET /api/question-templates'
     }
   });
 });
