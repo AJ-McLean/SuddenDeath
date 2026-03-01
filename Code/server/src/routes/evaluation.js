@@ -23,7 +23,7 @@ router.post('/evaluate-answer', async (req, res) => {
     console.log(`🎯 Evaluating answer: "${userAnswer}" for question: "${question}"`);
 
     // Use Gemini to evaluate the answer
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
     
     const evaluationPrompt = `
 You are evaluating a quiz answer. Please respond with ONLY "RIGHT" or "WRONG" - no explanation, no context, just one word.

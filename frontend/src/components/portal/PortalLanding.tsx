@@ -477,13 +477,49 @@ export function PortalLanding() {
       console.log(`➡️ Moving to question ${nextIndex + 1}/${questions.length}`);
       (window as any).__currentQuestionIndex = nextIndex;
       
-      // Play the next question
+      // Prepare the next question with template data (async)
       const nextQuestion = questions[nextIndex];
-      playQuestionSequence(nextQuestion);
+      prepareAndPlayQuestion(nextQuestion);
     } else {
       console.log('🏁 Quiz completed!');
       console.log('🎉 All questions finished! Great job!');
       // Quiz is complete - could trigger completion UI here
+    }
+  };
+
+  const prepareAndPlayQuestion = async (question: any) => {
+    try {
+      console.log(`🎵 Preparing question: "${question.filled_question}"`);
+      
+      // Generate TTS for this question
+      const ttsResponse = await fetch(`${import.meta.env.VITE_API_BASE || 'http://localhost:3001'}/api/audio/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: question.filled_question
+        })
+      });
+
+      const ttsResult = await ttsResponse.json();
+      
+      // Create the complete question object with template data (same structure as first question)
+      const preparedQuestion = {
+        ...question,
+        template: {
+          id: question.template_id,
+          title: question.template_id,
+          pre_audio_url: `/api/audio/static/pre/${question.template_id}`,
+          post_audio_url: `/api/audio/static/post/${question.template_id}`,
+          live_tts: ttsResult
+        }
+      };
+      
+      console.log(`✅ Question prepared, starting playback`);
+      playQuestionSequence(preparedQuestion);
+      
+    } catch (error) {
+      console.error('❌ Error preparing question:', error);
+      console.log('🏁 Quiz ended due to preparation error');
     }
   };
 
@@ -506,7 +542,7 @@ export function PortalLanding() {
       console.log(`📊 Evaluation result:`, evaluation);
 
       // Generate TTS for pre-recorded response
-      const ttsResponse = await fetch(`${import.meta.env.VITE_API_BASE || 'http://localhost:3001'}/api/audio/start`, {
+      const ttsResponse = await fetch(`${import.meta.env.VITE_API_BASE || 'http://localhost:3001'}/api/audio/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -549,7 +585,7 @@ export function PortalLanding() {
             if (!evaluation.isCorrect && evaluation.liveExplanation) {
               console.log(`💡 Playing explanation: "${evaluation.liveExplanation}"`);
               
-              const explanationResponse = await fetch(`${import.meta.env.VITE_API_BASE || 'http://localhost:3001'}/api/audio/start`, {
+              const explanationResponse = await fetch(`${import.meta.env.VITE_API_BASE || 'http://localhost:3001'}/api/audio/generate`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -616,7 +652,7 @@ export function PortalLanding() {
       console.log(`🤔 Thinking response: "${result.response}"`);
       
       // Generate TTS for thinking response
-      const ttsResponse = await fetch(`${import.meta.env.VITE_API_BASE || 'http://localhost:3001'}/api/audio/start`, {
+      const ttsResponse = await fetch(`${import.meta.env.VITE_API_BASE || 'http://localhost:3001'}/api/audio/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

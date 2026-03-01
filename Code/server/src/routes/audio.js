@@ -67,6 +67,33 @@ router.post('/start', async (req, res) => {
   }
 });
 
+// POST /api/audio/generate - Direct TTS generation without sessions
+router.post('/generate', async (req, res) => {
+  try {
+    const { text, voice_id } = req.body;
+    
+    if (!text) {
+      return res.status(400).json({
+        error: 'text is required'
+      });
+    }
+
+    console.log(`🎙️ Generating direct TTS for: "${text}"`);
+    
+    // Generate TTS directly
+    const result = await elevenLabs.generateSpeech(text);
+    
+    return res.json(result);
+    
+  } catch (error) {
+    console.error('Direct TTS generation error:', error);
+    res.status(500).json({
+      error: 'Failed to generate TTS',
+      message: error.message
+    });
+  }
+});
+
 // GET /api/audio/intro - Serve intro audio
 router.get('/intro', (req, res) => {
   try {
