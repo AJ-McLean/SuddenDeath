@@ -20,6 +20,47 @@ export async function sendMessage(payload: SendMessagePayload): Promise<BackendR
   return res.json();
 }
 
+export async function pollAudioJob(pollUrl: string): Promise<any> {
+  if (!API_BASE) {
+    // Mock polling for demo
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    return {
+      status: 'completed',
+      audioUrl: '/mock-audio.mp3'
+    };
+  }
+
+  const fullUrl = pollUrl.startsWith('http') ? pollUrl : `${API_BASE}${pollUrl}`;
+  const res = await fetch(fullUrl);
+  
+  if (!res.ok) {
+    throw new Error(`Polling error: ${res.status}`);
+  }
+
+  return res.json();
+}
+
+export async function startAudioGeneration(sessionId: string): Promise<any> {
+  if (!API_BASE) {
+    return {
+      jobId: 'mock-job-id',
+      pollUrl: '/api/audio/job/mock-job-id'
+    };
+  }
+
+  const res = await fetch(`${API_BASE}/api/audio/start`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ sessionId }),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Audio start error: ${res.status}`);
+  }
+
+  return res.json();
+}
+
 // ---- Mock backend for demo purposes ----
 let turnCount = 0;
 

@@ -135,7 +135,14 @@ export function VoiceInput() {
       // Reuse the stream acquired during the user gesture (button click)
       let stream = (window as any).__portalStream as MediaStream | undefined;
       if (!stream || stream.getAudioTracks().length === 0) {
-        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        stream = await navigator.mediaDevices.getUserMedia({ 
+          audio: { 
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+            sampleRate: 44100
+          } 
+        });
       }
       streamRef.current = stream;
 
@@ -145,7 +152,20 @@ export function VoiceInput() {
       const analyser = audioCtx.createAnalyser();
       analyser.fftSize = 256;
       analyser.smoothingTimeConstant = 0.8;
+      
+      // CRITICAL: Only connect to analyser, NEVER to destination (speakers)
       source.connect(analyser);
+      
+      // Ensure the stream audio tracks don't output to speakers
+      stream.getAudioTracks().forEach(track => {
+        track.enabled = true; // Keep enabled for processing
+        // Ensure no echo/monitoring
+        if ('getSettings' in track) {
+          const settings = track.getSettings();
+          console.log('Audio track settings:', settings);
+        }
+      });
+      
       analyserRef.current = analyser;
 
       setIsListening(true);
@@ -158,6 +178,14 @@ export function VoiceInput() {
       console.error("Microphone access denied");
     }
   }, [updateWaveform, startRecognition, isMuted]);
+
+  // Expose voice input controls to global scope for AudioPlayer coordination
+  useEffect(() => {
+    (window as any).__voiceInput = {
+      isMuted,
+      setMuted: setIsMuted
+    };
+  }, [isMuted]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -172,6 +200,8 @@ export function VoiceInput() {
       if (audioContextRef.current) {
         audioContextRef.current.close();
       }
+      // Clean up global reference
+      delete (window as any).__voiceInput;
     };
   }, []);
 
@@ -195,6 +225,21 @@ export function VoiceInput() {
       if (res.questionResult && res.questionIndex !== undefined) {
         setQuestionResult(res.questionIndex, res.questionResult);
         setCurrentQuestion(res.questionIndex + 1);
+      }
+
+      // Play audio sequence if available
+      if (res.preUrl || res.liveUrl || res.pollUrl || res.postUrl || res.audioUrl || res.startAudioEndpoint) {
+        const audioPlayer = (window as any).__audioPlayer;
+        if (audioPlayer) {
+          await audioPlayer.playSequence({
+            preUrl: res.preUrl,
+            liveUrl: res.liveUrl || res.audioUrl,
+            pollUrl: res.pollUrl,
+            postUrl: res.postUrl,
+            sessionId: sessionId,
+            startAudioEndpoint: res.startAudioEndpoint,
+          });
+        }
       }
 
       if (res.ended && res.outcome) {
@@ -225,12 +270,13 @@ export function VoiceInput() {
   const mirroredData = [...leftHalf, ...rightHalf];
 
   return (
-    <motion.div
-      className="flex flex-col items-center gap-3"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: 0.5 }}
-    >
+    <>
+      <motion.div
+        className="flex flex-col items-center gap-3"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5 }}
+      >
       {/* Mirrored waveform — centered, fluid */}
       <div className="flex items-center justify-center gap-[1.5px] h-20 w-[min(80vw,500px)]">
         {mirroredData.map((val, i) => {
@@ -295,5 +341,6 @@ export function VoiceInput() {
         </span>
       )}
     </motion.div>
+    </>
   );
 }

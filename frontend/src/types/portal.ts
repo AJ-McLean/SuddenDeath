@@ -28,6 +28,11 @@ export interface BackendResponse {
   questionResult?: QuestionResult;
   questionIndex?: number;
   totalQuestions?: number;
+  audioUrl?: string; // URL to MP3 of Wheatley's full spoken response
+  preUrl?: string; // URL to pre-question audio
+  postUrl?: string; // URL to post-question audio
+  liveUrl?: string; // URL to live generated audio
+  pollUrl?: string; // URL to poll for live audio readiness
 }
 
 export interface SendMessagePayload {

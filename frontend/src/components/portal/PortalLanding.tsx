@@ -2,19 +2,140 @@ import { motion } from "framer-motion";
 import { PortalRing } from "@/components/portal/PortalRing";
 import { GlitchText } from "@/components/portal/GlitchText";
 import { usePortal } from "@/context/PortalContext";
+import { AudioPlayer } from "@/components/portal/AudioPlayer";
+import { useState, useEffect } from "react";
 
 export function PortalLanding() {
   const { setState, setCameraEnabled } = usePortal();
 
+  const captureAndAnalyzeOutfit = async (stream: MediaStream) => {
+    try {
+      // Create video element to capture frame
+      const video = document.createElement('video');
+      video.srcObject = stream;
+      video.muted = true; // CRITICAL: Mute to prevent microphone feedback!
+      video.play();
+
+      // Wait for video to be ready and playing
+      await new Promise((resolve) => {
+        video.addEventListener('loadedmetadata', resolve, { once: true });
+      });
+      
+      // Wait a bit more for the camera to actually start showing video
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Create canvas to capture frame
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx!.drawImage(video, 0, 0);
+
+      // Convert to base64
+      const imageData = canvas.toDataURL('image/jpeg', 0.8);
+
+      // Send to backend for Gemini analysis
+      const response = await fetch(`${import.meta.env.VITE_API_BASE || 'http://localhost:3001'}/api/analyze-outfit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ image: imageData }),
+      });
+
+      const result = await response.json();
+      console.log('Wheatley says:', result.wittyOneLiner);
+      
+      // Store the TTS result and coordinate with Second Intro timing
+      const playWheatleyWhenIntroEnds = (audioUrl: string) => {
+        const introAudio = (window as any).__introAudio;
+        if (introAudio && !introAudio.ended && !introAudio.paused) {
+          // Second Intro is still playing, wait for it to finish
+          introAudio.addEventListener('ended', () => {
+            const audio = new Audio(`${import.meta.env.VITE_API_BASE || 'http://localhost:3001'}${audioUrl}`);
+            audio.play().catch(console.error);
+          }, { once: true });
+        } else {
+          // Second Intro already finished, play immediately
+          const audio = new Audio(`${import.meta.env.VITE_API_BASE || 'http://localhost:3001'}${audioUrl}`);
+          audio.play().catch(console.error);
+        }
+      };
+
+      // Handle TTS response - either direct URL or polling
+      if (result.audioUrl) {
+        playWheatleyWhenIntroEnds(result.audioUrl);
+      } else if (result.pollUrl) {
+        // Poll for TTS completion and play when ready
+        const pollForAudio = async () => {
+          try {
+            const pollResponse = await fetch(`${import.meta.env.VITE_API_BASE || 'http://localhost:3001'}${result.pollUrl}`);
+            const pollResult = await pollResponse.json();
+            
+            if (pollResult.status === 'completed' && pollResult.audioUrl) {
+              playWheatleyWhenIntroEnds(pollResult.audioUrl);
+            } else if (pollResult.status === 'generating') {
+              // Keep polling
+              setTimeout(pollForAudio, 500);
+            }
+          } catch (error) {
+            console.error('Failed to poll for TTS:', error);
+          }
+        };
+        pollForAudio();
+      }
+      
+    } catch (error) {
+      console.error('Failed to capture and analyze outfit:', error);
+    }
+  };
+
+
   const handleStart = async () => {
+    // Mute any currently playing audio (intro)
+    const audioPlayer = (window as any).__audioPlayer;
+    if (audioPlayer && audioPlayer.audioRef && audioPlayer.audioRef.current) {
+      audioPlayer.audioRef.current.pause();
+    }
+
+    // Play "Second Intro.mp3" as latency buffer (cache-bust to get updated version)
+    const secondIntroAudio = new Audio(`${import.meta.env.VITE_API_BASE || 'http://localhost:3001'}/api/audio/static/intro/second-intro?t=${Date.now()}`);
+    (window as any).__introAudio = secondIntroAudio;
+    
+    try {
+      await secondIntroAudio.play();
+    } catch (error) {
+      console.error('Failed to play second intro audio:', error);
+    }
+
     // Request permissions directly in the click handler (user gesture context)
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        audio: { 
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+          sampleRate: 44100
+        }, 
+        video: true 
+      });
       (window as any).__portalStream = stream;
       setCameraEnabled(true);
+      
+      // Wait for camera stream to initialize, then capture
+      setTimeout(() => {
+        captureAndAnalyzeOutfit(stream);
+      }, 1000);
     } catch {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          audio: { 
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+            sampleRate: 44100
+          } 
+        });
         (window as any).__portalStream = stream;
       } catch {
         console.warn("No media permissions granted");
@@ -37,6 +158,7 @@ export function PortalLanding() {
 
   return (
     <div className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden">
+      <AudioPlayer playIntroOnMount={true} />
       {/* Background grid */}
       <div
         className="absolute inset-0 opacity-[0.03]"

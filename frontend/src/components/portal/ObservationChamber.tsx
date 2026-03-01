@@ -5,6 +5,7 @@ import { WebcamFrame } from "@/components/portal/WebcamFrame";
 import { AICore } from "@/components/portal/AICore";
 import { QuestionHUD } from "@/components/portal/QuestionHUD";
 import { VoiceInput } from "@/components/portal/VoiceInput";
+import { AudioPlayer } from "@/components/portal/AudioPlayer";
 import { RotateCcw } from "lucide-react";
 import wheatleyImg from "@/assets/wheatley.png";
 
@@ -35,6 +36,7 @@ export function ObservationChamber() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
+      <AudioPlayer />
       {/* Fullscreen webcam mirror */}
       <WebcamFrame fullscreen />
 
